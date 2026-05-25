@@ -1,0 +1,35 @@
+name: Generate RUZ HTML Table
+
+on:
+  workflow_dispatch: # Umožní spustiť proces manuálne kliknutím na tlačidlo
+
+permissions:
+  contents: write # Povolenie pre zápis vygenerovaného HTML do repozitára
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Run script
+      run: python script.py
+
+    - name: Commit and push if changed
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.name "actions@github.com"
+        git add index.html
+        git commit -m "Aktualizácia RUZ dát" || exit 0
+        git push
